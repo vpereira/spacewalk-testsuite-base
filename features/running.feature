@@ -9,4 +9,4 @@ Feature: The host is running
   Scenario: Accessing home page
     Given I am not authorized
     When I go to the home page
-    Then I should see something
+    Then I should see that this is an original Spacewalk

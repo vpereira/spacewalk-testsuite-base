@@ -1,9 +1,12 @@
 # Copyright (c) 2010-2011 Novell, Inc.
 # Licensed under the terms of the MIT license.
 
-Then /^I should see something$/ do
+Then /^I should see that this is an original Spacewalk$/ do
   fail if not page.has_content?('Sign In')
   fail if not page.has_content?('About')
+  fail if not page.has_content?('Spacewalk release')
+  fail if not page.has_content?('Spacewalk Login')
+  fail if not page.has_content?('Password')
 end
 
 #
