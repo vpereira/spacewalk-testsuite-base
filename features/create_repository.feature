@@ -18,7 +18,7 @@ Feature: Adding repository to a channel
     When I enter "SLES11-SP1-Updates-i586" as "label"
      And I enter "http://localhost/pub/SLES11-SP1-Updates-i586/" as "url"
      And I click on "Create Repository"
-    Then I should see a "Repository created successfully" text
+    Then I should see a "Repository created successfully" text or "is already in use, please choose a different label" text
 
   Scenario: Add repository to the channel
    Given I am authorized as "testing" with password "testing"
@@ -49,7 +49,7 @@ Feature: Adding repository to a channel
     When I enter "SLES11-SP1-Updates-x86_64" as "label"
      And I enter "http://localhost/pub/SLES11-SP1-Updates-x86_64/" as "url"
      And I click on "Create Repository"
-    Then I should see a "Repository created successfully" text
+    Then I should see a "Repository created successfully" text or "is already in use, please choose a different label" text
 
   Scenario: Disable Metadata check for SLES11-SP1-Updates-x86_64 repository
    Given I am authorized as "testing" with password "testing"

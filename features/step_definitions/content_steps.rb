@@ -111,3 +111,8 @@ Then /^"([^"]*)" is installed$/ do |package|
    fail if ! $?.success?
 end
 
+Then /^I should see a "([^"]*)" text or "([^"]*)" text$/ do |primary_text, alternate_text|
+  if not (page.has_content?(debrand_string(primary_text)) or page.has_content?(debrand_string(alternate_text)))
+    fail
+  end
+end
