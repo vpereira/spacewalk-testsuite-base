@@ -19,7 +19,7 @@ Feature: Adding channels
      And I select "None" from "Parent Channel"
      And I select "x86_64" from "Channel Architecture"
      And I enter "Base channel for testing" as "Channel Summary"
-     And I enter "No more desdcription for base channel." as "Channel Description"
+     And I enter "No more description for base channel." as "Channel Description"
      And I click on "Create Channel"
     Then I should see a "Channel Test Base Channel created." text
 
@@ -32,7 +32,7 @@ Feature: Adding channels
      And I select "None" from "Parent Channel"
      And I select "IA-32" from "Channel Architecture"
      And I enter "SLES11-SP1-Updates i586 channel for testing" as "Channel Summary"
-     And I enter "No more desdcription for base channel." as "Channel Description"
+     And I enter "No more description for base channel." as "Channel Description"
      And I click on "Create Channel"
     Then I should see a "Channel SLES11-SP1-Updates i586 Channel created." text
 
@@ -45,7 +45,7 @@ Feature: Adding channels
      And I select "None" from "Parent Channel"
      And I select "x86_64" from "Channel Architecture"
      And I enter "SLES11-SP1-Updates x86_64 channel for testing" as "Channel Summary"
-     And I enter "No more desdcription for base channel." as "Channel Description"
+     And I enter "No more description for base channel." as "Channel Description"
      And I click on "Create Channel"
     Then I should see a "Channel SLES11-SP1-Updates x86_64 Channel created." text
 

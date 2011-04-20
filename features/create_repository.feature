@@ -17,7 +17,6 @@ Feature: Adding repository to a channel
      And I follow "create new repository"
     When I enter "SLES11-SP1-Updates-i586" as "label"
      And I enter "http://localhost/pub/SLES11-SP1-Updates-i586/" as "url"
-     And I uncheck "metadataSigned"
      And I click on "Create Repository"
     Then I should see a "Repository created successfully" text
 
@@ -51,7 +50,6 @@ Feature: Adding repository to a channel
      And I enter "http://localhost/pub/SLES11-SP1-Updates-x86_64/" as "url"
      And I click on "Create Repository"
     Then I should see a "Repository created successfully" text
-     And I should see "metadataSigned" as checked
 
   Scenario: Disable Metadata check for SLES11-SP1-Updates-x86_64 repository
    Given I am authorized as "testing" with password "testing"
@@ -59,10 +57,8 @@ Feature: Adding repository to a channel
      And I follow "Manage Software Channels" in the left menu
      And I follow "Manage Repositories" in the left menu
      And I follow "SLES11-SP1-Updates-x86_64"
-    When I uncheck "metadataSigned"
      And I click on "Update Repository"
     Then I should see a "Repository updated successfully" text
-     And I should see "metadataSigned" as unchecked
 
   Scenario: Add repository to the channel
    Given I am authorized as "testing" with password "testing"
