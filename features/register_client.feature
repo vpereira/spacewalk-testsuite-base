@@ -8,6 +8,7 @@ Feature: Register a client
 
   Scenario: Register a client
     Given I am root
+    When I check if it is a remote host
     When I register using an activation key
     Then I should see this client in spacewalk
 

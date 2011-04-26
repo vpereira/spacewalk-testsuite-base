@@ -32,12 +32,19 @@ class RemoteRegistrationTest
   # Check environment if we can operate with the target host.
   #
   def check_env
-    hostname = @remote_client.exec!("hostname").strip! # XXX: Not finished
+    hostname = @remote_client.exec("hostname")
     if hostname != @host
-      raise "Wrong hostname: " + hostname
+      raise "Wrong hostname: " + hostname.to_s
     end
 
-    data = @remote_client.exec!("sudo cat /etc/shadow")
-    puts data
+    @remote_client.connect
+    data = @remote_client.exec_with_pty("sudo cat /etc/shadow")
+    
+    @remote_client.close
+    if data.starts_with? 'root'
+      raise "OK"
+    else
+      raise "I have no access to the root-protected resources via sudo on a remote host."
+    end
   end
 end
