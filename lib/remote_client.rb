@@ -60,37 +60,32 @@ class ClientRemoteOperations
   # Useful for SSH commands within a same user session.
   #
   def exec(command)
-    out = @ssh.exec!(command)
-    out.strip!
-    return out
+    return @ssh.exec!(command).chomp
   end
 
 
   #
-  # In order to run remote sudo commands, a TTY is needed.
-  # SSH can create a pseudo-tty, called PTY.
+  # In order to run remote sudo commands, a TTY is needed.  # SSH can create a pseudo-tty, called PTY.
   # This method allows you to call anything within the PTY initialized.
   #
   def exec_with_pty(command)
+    out = []
     @ssh.open_channel do |channel|
       channel.request_pty do |c, result|
-        if result
-          puts "PTY around"
-        else
-          puts "No PTY :("
+        if !result
+          raise "No PTY allocated :("
         end
       end
 
       channel.exec(command) do |c, callback|
-        puts "Exec #{command}"
         abort "Execution error" unless callback
 
         channel.on_data do |c, data|
           data.strip!
           if data.include?('password for ' + @user)
             channel.send_data(@sudo_password + "\n")
-          elsif data
-            puts data
+          else
+            out.push(data)
           end
         end
 
@@ -98,13 +93,27 @@ class ClientRemoteOperations
           puts "STDERR: #{data}"
         end
 
-        channel.on_close do |c|
-          puts "SSH channel has been closed."
-        end
+        #channel.on_close do |c|
+        #  puts "Closing"
+        #end
       end
+    end
 
+    # Channels working simultaneously over the session.
+    # We have only one channel at one call, yet still
+    # need to wait it is all done.
+
+    @ssh.loop
+
+    # Return the out back in appropriate type.
+
+    if out
+      return out.join('')
+    else
+      return nil
     end
   end
+
 
   #
   # Close SSH connection to the remote.

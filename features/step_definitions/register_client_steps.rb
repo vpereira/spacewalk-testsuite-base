@@ -4,20 +4,82 @@
 require "remote_registration"
 
 
-client_host = ENV['CLIENTHOST']
-remote_registrar = nil
-if client_host
-  puts "    WARNING: You are registering \"#{client_host}\" as user \"#{ENV['USER']}\"."
-  remote_registrar = RemoteRegistrationTest.new(client_host, ENV['USER'])
+$client_host = ENV['CLIENTHOST']
+
+#
+# Get remote registration object.
+#
+def get_remote_registrar
+  remote_registrar = nil
+  if $client_host
+    remote_registrar = RemoteRegistrationTest.new($client_host, ENV['USER'])
+  end
+
+  return remote_registrar
+end
+
+
+#
+# Register remote host.
+#
+def register_local_or_remote_host(keyname)
+  if ENV['TESTHOST'].to_s == ""
+    print "    ERROR: Please define TESTHOST environment variable.\n\n"
+    raise "Satellite host is missing!"
+  end
+
+  rm_sys_id_cmd = "rm -f /etc/sysconfig/rhn/systemid"
+  regurl = "http://#{ENV['TESTHOST']}/XMLRPC"
+  reg_host_cmd = "rhnreg_ks --serverUrl=#{regurl} --activationkey=#{keyname}"
+
+  if $client_host.to_s != ""
+    puts "Registering remote host #{$client_host}"
+    print "Removing system ID...  "
+    begin
+      result = get_remote_registrar.get_remote_client.exec_with_pty("sudo " + rm_sys_id_cmd)
+      print "Done\n"
+      puts "Result: #{result}"
+    rescue
+      print "Failed\n"
+    end
+
+    print "Registering host... "
+    begin
+      result = get_remote_registrar.get_remote_client.exec_with_pty("sudo " + reg_host_cmd)
+      print "Done\n"
+      puts "Result: #{result}"
+    rescue
+      print "Failed\n"
+    end
+
+  else
+    `#{rm_sys_id_cmd}`
+    output = `#{reg_host_cmd}`
+    if ! $?.success?
+      raise "Registration failed '#{command}' #{$!}: #{output}"
+    end
+  end
+end
+
+
+#
+# Get a client hostname (remote or a local)
+#
+def get_client_hostname
+  hostname = ENV['CLIENTHOST']
+  if hostname.to_s == ""
+    hostname = $myhostname
+  end
+  return hostname
 end
 
 
 Given /^I am root$/ do
-  if client_host
-    puts "    WARNING: Root test has been skipped as you are registering a remote host \"#{client_host}\"."
+  if $client_host
+    puts "    WARNING: Root test has been skipped as you are registering a remote host \"#{$client_host}\"."
   else
-    if client_host != nil
-      puts "Using target host: " + client_host
+    if $client_host != nil
+      puts "Using target host: " + $client_host
     end
 
     uid = `id -u`
@@ -26,7 +88,7 @@ Given /^I am root$/ do
     end
   end
 
-  if $myhostname == "linux"
+  if get_client_hostname == "linux"
     raise "Invalid hostname"
   end
 end
@@ -47,27 +109,26 @@ Given /^I update the profile of this client$/ do
 end
 
 
-When /^I register using "([^"]*)" key$/ do |arg1|
-  # remove systemid file
-  `rm -f /etc/sysconfig/rhn/systemid`
-
-  regurl = "http://#{ENV['TESTHOST']}/XMLRPC"
-
-  command = "rhnreg_ks --serverUrl=#{regurl} --activationkey=#{arg1}"
-  #print "Command: #{command}\n"
-
-  output = `#{command}`
-  if ! $?.success?
-    raise "Registration failed '#{command}' #{$!}: #{output}"
-  end
+When /^I register using "([^"]*)" key$/ do |keyname|
+  register_local_or_remote_host(keyname)
 end
 
+
 When /^I register using an activation key$/ do
-  arch=`uname -m`
-  arch.chomp!
-  if arch != "x86_64"
+  arch = nil
+  remote = get_remote_registrar()
+  if remote
+    arch = remote.get_platform
+  else
+    arch=`#{cmd}`.chomp
+  end
+
+  platforms = ["x86_64", "i586"]
+  if !platforms.any? {|platform| platform == arch}
+    puts "    WARNING: Overriding platform #{arch} with i586."
     arch = "i586"
   end
+
   When "I register using \"1-SUSE-DEV-#{arch}\" key"
 end
 
@@ -79,17 +140,18 @@ end
 
 
 Then /^I should see this client as link$/ do
-  Then "I should see a \"#{$myhostname}\" link"
+  Then "I should see a \"#{get_client_hostname}\" link"
 end
 
 
 When /^I follow this client link$/ do
-  When "I follow \"#{$myhostname}\""
+  When "I follow \"#{get_client_hostname}\""
 end
 
 When /^I check if it is a remote host$/ do
-  if remote_registrar
-    remote_registrar.check_env
+  remote = get_remote_registrar()
+  if remote
+    remote.check_env
   else
     puts "    NOTE: You are going to register *this* host."
   end
