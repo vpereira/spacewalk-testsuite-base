@@ -48,6 +48,8 @@ def register_local_or_remote_host(keyname)
       result = get_remote_registrar.get_remote_client.exec_with_pty("sudo " + reg_host_cmd)
       print "Done\n"
       puts "Result: #{result}"
+
+      puts "Command executed: " + reg_host_cmd
     rescue
       print "Failed\n"
     end
