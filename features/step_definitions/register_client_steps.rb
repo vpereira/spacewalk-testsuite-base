@@ -6,18 +6,6 @@ require "remote_registration"
 
 $client_host = ENV['CLIENTHOST']
 
-#
-# Get remote registration object.
-#
-def get_remote_registrar
-  remote_registrar = nil
-  if $client_host
-    remote_registrar = RemoteRegistrationTest.new($client_host, ENV['USER'])
-  end
-
-  return remote_registrar
-end
-
 
 #
 # Register remote host.
@@ -61,18 +49,6 @@ def register_local_or_remote_host(keyname)
       raise "Registration failed '#{command}' #{$!}: #{output}"
     end
   end
-end
-
-
-#
-# Get a client hostname (remote or a local)
-#
-def get_client_hostname
-  hostname = ENV['CLIENTHOST']
-  if hostname.to_s == ""
-    hostname = $myhostname
-  end
-  return hostname
 end
 
 
