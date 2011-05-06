@@ -1,12 +1,55 @@
 # Copyright (c) 2010-2011 Novell, Inc.
 # Licensed under the terms of the MIT license.
 
-# feature/users-userdetails.feature
-@users-createnewuser
-Feature: Watch/edit user details
-  Validate users page accessibility
+# feature/users.feature
+@setup
+Feature: Create and delete a new user.
+  Scenario: Try to create a new user with a weak password
+    Given I am on the Users page
+      When I follow "create new user"
+        And I enter "user1" as "login"
+        And I enter "x" as "desiredpassword"
+        And I enter "x" as "desiredpasswordConfirm"
+        And I select "Mr." from "prefix"
+        And I enter "Test" as "firstNames"
+        And I enter "User" as "lastName"
+        And I enter "galaxy-noise@suse.de" as "email"
+        And I click on "Create Login"
+       Then I should see a "Desired Password cannot be less than 5 characters." text
+        And I should see a "Confirm Password cannot be less than 5 characters." text
 
-  Scenario: Access user details
+  Scenario: Try to create a new user with a password that does not matches.
+    Given I am on the Users page
+      When I follow "create new user"
+        And I enter "user1" as "login"
+        And I enter "foobar" as "desiredpassword"
+        And I enter "spambot" as "desiredpasswordConfirm"
+        And I select "Mr." from "prefix"
+        And I enter "Test" as "firstNames"
+        And I enter "User" as "lastName"
+        And I enter "galaxy-noise@suse.de" as "email"
+        And I click on "Create Login"
+       Then I should see a "Passwords do not match." text
+
+  Scenario: Create a new user.
+    Given I am on the Users page
+      When I follow "create new user"
+        And I enter "user1" as "login"
+        And I enter "user1" as "desiredpassword"
+        And I enter "user1" as "desiredpasswordConfirm"
+        And I select "Mr." from "prefix"
+        And I enter "Test" as "firstNames"
+        And I enter "User" as "lastName"
+        And I enter "galaxy-noise@suse.de" as "email"
+        And I click on "Create Login"
+      Then I should see a "Account user1 created, login information sent to galaxy-noise@suse.de" text
+        And I should see a "user1" link
+
+  Scenario: Login as user1
+    Given I am authorized as "user1" with password "user1"
+      Then I should see a "user1" link
+
+  Scenario: Access new user details
     Given I am on the Details page
       Then I should see a "User Details" text
         And I should see a "delete user" link
@@ -40,7 +83,7 @@ Feature: Watch/edit user details
         And I check "role_monitoring_admin"
         And I click on "Submit"
       Then the "role_satellite_admin" checkbox should be disabled
-        And I should see a "SUSE Manager Administrator" text
+        And I should see a "Spacewalk Administrator" text
         And I should see "role_org_admin" as checked
         And I should see a "Organization Administrator" text
         And the "role_system_group_admin" checkbox should be disabled
@@ -100,13 +143,24 @@ Feature: Watch/edit user details
 
   Scenario: Reactivate User (Succeed)
     Given I am on the Users page
-      When I follow "Deactivated"
-        And I follow "user1"
-      Then I should see a "reactivate user" link
-    When I follow "reactivate user"
-    Then I should see a "This action will allow this user to access SUSE Manager. This user will retain all permissions, roles, and data that he or she had before being deactivated." text
-    When I click on "Reactivate User"
+     When I follow "Deactivated"
+      And I follow "user1"
+     Then I should see a "reactivate user" link
+     When I follow "reactivate user"
+     Then I should see a "This action will allow this user to access Spacewalk. This user will retain all permissions, roles, and data that he or she had before being deactivated." text
+     When I click on "Reactivate User"
+     Then I should see a "Active Users" text
+      And I should see a "user1" link
+     When I follow "Deactivated"
+     Then I should not see a "user1" link
+
+  Scenario: Delete user1
+    Given I am on the Details page
+      When I follow "delete user"
+      Then I should see a "Confirm User Deletion" text
+       And I should see a "This will delete this user permanently." text
+      When I click on "Delete User"
       Then I should see a "Active Users" text
-        And I should see a "user1" link
-    When I follow "Deactivated"
-    Then I should not see a "user1" link
+       And I should not see a "user1" link
+
+

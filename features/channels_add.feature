@@ -19,35 +19,35 @@ Feature: Adding channels
      And I select "None" from "Parent Channel"
      And I select "x86_64" from "Channel Architecture"
      And I enter "Base channel for testing" as "Channel Summary"
-     And I enter "No more desdcription for base channel." as "Channel Description"
+     And I enter "No more description for base channel." as "Channel Description"
      And I click on "Create Channel"
     Then I should see a "Channel Test Base Channel created." text
 
-  Scenario: Adding SLES11-SP1-Updates i586 base channel
+  Scenario: Adding FC14-Tests i386 base channel
      And I follow "Channels"
      And I follow "Manage Software Channels" in the left menu
      And I follow "create new channel"
-    When I enter "SLES11-SP1-Updates i586 Channel" as "Channel Name"
-     And I enter "sles11-sp1-updates-i586-channel" as "Channel Label"
+    When I enter "FC14-Tests i386" as "Channel Name"
+     And I enter "fc14-tests-i386" as "Channel Label"
      And I select "None" from "Parent Channel"
      And I select "IA-32" from "Channel Architecture"
-     And I enter "SLES11-SP1-Updates i586 channel for testing" as "Channel Summary"
-     And I enter "No more desdcription for base channel." as "Channel Description"
+     And I enter "FC14-Tests i386 channel for testing" as "Channel Summary"
+     And I enter "No more description for base channel." as "Channel Description"
      And I click on "Create Channel"
-    Then I should see a "Channel SLES11-SP1-Updates i586 Channel created." text
+    Then I should see a "Channel FC14-Tests i386 created." text
 
-  Scenario: Adding SLES11-SP1-Updates x86_64 base channel
+  Scenario: Adding FC14-Tests x86_64 base channel
      And I follow "Channels"
      And I follow "Manage Software Channels" in the left menu
      And I follow "create new channel"
-    When I enter "SLES11-SP1-Updates x86_64 Channel" as "Channel Name"
-     And I enter "sles11-sp1-updates-x86_64-channel" as "Channel Label"
+    When I enter "FC14-Tests x86_64" as "Channel Name"
+     And I enter "fc14-tests-x86_64" as "Channel Label"
      And I select "None" from "Parent Channel"
      And I select "x86_64" from "Channel Architecture"
-     And I enter "SLES11-SP1-Updates x86_64 channel for testing" as "Channel Summary"
-     And I enter "No more desdcription for base channel." as "Channel Description"
+     And I enter "FC14 Tests x86_64 channel for testing" as "Channel Summary"
+     And I enter "No more description for base channel." as "Channel Description"
      And I click on "Create Channel"
-    Then I should see a "Channel SLES11-SP1-Updates x86_64 Channel created." text
+    Then I should see a "Channel FC14-Tests x86_64 created." text
 
 #2nd entry
 # "The channel name 'Test Base Channel' is already in use, please enter a different name"

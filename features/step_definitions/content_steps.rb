@@ -1,9 +1,12 @@
 # Copyright (c) 2010-2011 Novell, Inc.
 # Licensed under the terms of the MIT license.
 
-Then /^I should see something$/ do
+Then /^I should see that this is an original Spacewalk$/ do
   fail if not page.has_content?('Sign In')
   fail if not page.has_content?('About')
+  fail if not page.has_content?('Spacewalk release')
+  fail if not page.has_content?('Spacewalk Login')
+  fail if not page.has_content?('Password')
 end
 
 #
@@ -108,3 +111,8 @@ Then /^"([^"]*)" is installed$/ do |package|
    fail if ! $?.success?
 end
 
+Then /^I should see a "([^"]*)" text or "([^"]*)" text$/ do |primary_text, alternate_text|
+  if not (page.has_content?(debrand_string(primary_text)) or page.has_content?(debrand_string(alternate_text)))
+    fail
+  end
+end

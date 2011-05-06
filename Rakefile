@@ -21,8 +21,7 @@ features_task = Cucumber::Rake::Task.new do |t|
                      features/systemspage.feature
                      features/create_activationkey.feature
                      features/users.feature
-                     features/users-createnewuser.feature
-                     features/users-userdetails.feature
+                     features/new-users.feature
                      features/create_config_channel.feature
                      features/register_client.feature
                      features/monitoring.feature
@@ -44,7 +43,6 @@ features_task = Cucumber::Rake::Task.new do |t|
                      features/ncc-sync-channels.feature
                      features/delete_system_from_conf.feature
                      features/delete_config_channel.feature
-                     features/users-deleteuser1.feature
                     }
   t.cucumber_opts = cucumber_opts + feature_files
 end

@@ -2,10 +2,15 @@
 # Licensed under the terms of the MIT license.
 
 When /^I refresh the metadata$/ do
-   `rhn_check`
-   fail if ! $?.success?
-   client_refresh_metadata
+  print "Check RHN Network... "
+  client_rhn_check
+  puts "Done"
+
+  print "Refreshing metadata... "
+  client_refresh_metadata
+  puts "Done"
 end
+
 
 Then /^I should have "([^"]*)" in the metadata$/ do |text|
    arch=`uname -m`

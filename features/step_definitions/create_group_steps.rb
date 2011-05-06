@@ -7,14 +7,14 @@ Given /^I am on the groups page$/ do
 end
 
 When /^I check this client$/ do
-  within(:xpath, "//form/table/tbody/tr[.//a[contains(.,'#{$myhostname}')]]") do
+  within(:xpath, "//form/table/tbody/tr[.//a[contains(.,'#{get_client_hostname}')]]") do
     find(:xpath, "//input[@type='checkbox']").set(true)
   end
 end
 
 Then /^I should see this client as a link$/ do
   within(:xpath, "//td[@class='page-content']") do
-    fail if not find_link("#{$myhostname}").visible?
+    fail if not find_link("#{get_client_hostname}").visible?
   end
 end
 

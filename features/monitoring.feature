@@ -11,20 +11,28 @@ Feature: Configure monitoring
   I want to create a probe
   I want to add a system to the probe suite
 
-  Scenario: Activate monitoring scout
+  Scenario: Activate monitoring in general
     Given I am on the Admin page
-     When I follow "SUSE Manager Configuration"
-       And I follow "Monitoring" in class "content-nav"
-       And I check "Enable Monitoring Scout"
-       And I click on "Update Config"
-    Then I should see a "Configuration updated, Monitoring services restarted." text
+     When I follow "Spacewalk Configuration"
+      And I follow "General" in class "content-nav"
+      And I check "Enable Monitoring"
+      And I click on "Update"
+     Then I should see a "The Spacewalk must be restarted to reflect these changes." text
+
+  Scenario: Activate monitoring scount
+    Given I am on the Admin page
+     When I follow "Spacewalk Configuration"
+      And I follow "Monitoring" in class "convent-nav"
+      And I check "Enable Monitoring Scout"
+      And I click on "Update Config"
+     Then I should see a "Configuration updated, Monitoring services restarted." text
 
   Scenario: Check monitoring scout public key
     Given I am on the Monitoring page
-     And I wait for "10" seconds
-     And I follow "Scout Config Push"
-     And I follow "SUSE Manager Monitoring Scout"
-    Then I should see a "ssh-dss" text
+      And I wait for "10" seconds
+      And I follow "Scout Config Push"
+      And I follow "Monitoring Scout"
+     Then I should see a "ssh-dss" text
 
   Scenario: Create a probe suite
     Given I am on the Monitoring page
@@ -50,3 +58,4 @@ Feature: Configure monitoring
      And I check "checkall"
      And I click on "Push Scout Configs"
     Then I should see a "Config Push Initiated" text
+

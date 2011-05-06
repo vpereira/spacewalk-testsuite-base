@@ -3,7 +3,9 @@
 
 ==Introduction
 
-Testsuite to automatically test a Spacewalk installation
+Testsuite to automatically test a Spacewalk installation.
+This particular version of a Test Suite is designed for an
+original Spacewalk, 1.4 or more.
 
 ==Running
 
@@ -17,6 +19,10 @@ bundle install
   server.
 * BROWSER environment variable can be passed to change the default
   browser: chrome, htmlunit, chrome, firefox
+* CLIENTHOST environment variable is an optional, in case there
+  is another client machine that needs to be registered against
+  the current Spacewalk. Please see more details how to setup
+  a client machine in the section "Setting Up Remote Client".
 
 To run all tests:
 
@@ -32,6 +38,38 @@ Or look at rake -T
 * Cucumber features under features
 * Helpers shared scross tests/features should go into the
   lib/spacewalk_testsuite_base library
+
+==Setting Up Remote Client
+
+To setup a remote client that is going to be registered remotely,
+there are a following steps:
+
+1. Client should accept SSH login. At the moment user ID is as same,
+   as currently cucumber is running on.
+2. Client should have a password-less SSH key to let Cucumber's user
+   login transparently.
+3. Since all remote commands are executed via sudo but a password is
+   not passed, therefore a client should have :NOPASSWD (ALL) entry
+   for the current user in its /etc/sudoers file.
+
+==Using Remote Client
+
+Cucumber-based Test Suite in its previous implementation was only
+capable to registr a current client machine as a client against
+Spacewalk Manager system. However, now it is possible to keep Test
+Suite as a testing suite, while register a real client machines
+as they do exists. In order to let Test Suite started to use a
+remote client instead of localhost, an environment variable
+CLIENTHOST needs to be defined. For example:
+
+  export CLIENTHOST=client.suse.de
+
+In this case Test Sute will try to login to the $CLIENTHOST machine
+via secure shell and register it using a sudo.
+
+How to properly setup a remote client, please read "Setting Up Remote
+Client" requirements and instructions.
+
 
 ==License
 
