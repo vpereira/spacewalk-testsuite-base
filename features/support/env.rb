@@ -63,6 +63,8 @@ require 'rubygems'
 require 'capybara'
 require 'capybara/cucumber'
 require 'selenium-webdriver'
+require 'capybara-webkit'
+
 require File.join(File.dirname(__FILE__), '/cobbler_test.rb')
 
 require 'culerity' if browser == :htmlunit
@@ -80,15 +82,38 @@ Capybara.register_driver :selenium_firefox do |app|
   Capybara::Selenium::Driver.new(app, :browser => :firefox)
 end
 
+# capybara-webkit does not need registration, it is done by
+# the require 'capybara-webkit' part
+
 case browser
 when :htmlunit
   Capybara.default_driver = :culerity
   Capybara.use_default_driver
 else
   Capybara.default_driver = "selenium_#{browser}".to_sym
+  #Capybara.default_driver = :webkit
+  #Capybara.javascript_driver = :webkit
+  
   Capybara.app_host = host
 end
 
 # don't run own server on a random port
 Capybara.run_server = false
-# Remote::Capabilities.chrome
+
+if Capybara.javascript_driver == :webkit
+  def screen_shot_and_save_page
+    require 'capybara/util/save_and_open_page'
+    path = "/#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
+    Capybara.save_page body, File.join(Dir.tmpdir, "#{path}.html")
+    page.driver.render File.join(File.dirname(__FILE__), '..', '..', "#{path}.png")
+    #"#{Capybara.save_and_open_page_path}" 
+  end
+
+  begin
+    After do |scenario|
+      screen_shot_and_save_page if scenario.failed?
+    end
+  rescue Exception => e
+    STDERR.puts "Snapshots not available for this environment.Have you got gem 'capybara-webkit' in your Gemfile and have you enabled the javascript driver?"
+  end
+end

@@ -1,6 +1,7 @@
 # Copyright (c) 2010-2011 Novell, Inc.
 # Licensed under the terms of the MIT license.
 
+@db
 Feature: Test Oracle and PostgreSQL databases connections.
   Scenario: I prepare to connect to the Databases
     And I define user "spacewalk" for Oracle DB
